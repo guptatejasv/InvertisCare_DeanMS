@@ -7,6 +7,7 @@ import { Student } from "../../model/student.user";
 import mongoose from "mongoose";
 import { Chief } from "../../model/official.Chief";
 import ChiefNotification from "../../model/chief.notifications";
+import HODNotification from "../../model/hod.notifications";
 export const escalatedTo = async (req: Request, res: Response) => {
   try {
     const userId = req.user.id;
@@ -43,7 +44,11 @@ export const escalatedTo = async (req: Request, res: Response) => {
       message: `Your complaint with ${compId} id is escalated to Chief`,
       type: "Complaint Update",
     });
-
+    await HODNotification.create({
+      HODId: complaint?.assignedTo,
+      message: `The complaint with ${compId} id is escalated to Chief by ${dean?.name}`,
+      type: "Complaint Update",
+    });
     await ChiefNotification.create({
       ChiefId: escalatedToChief,
       message: `A New Complaint with ${compId} is assigned to you.`,

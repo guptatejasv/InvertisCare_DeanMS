@@ -6,6 +6,7 @@ import { Student } from "../../model/student.user";
 import Notification from "../../model/student.notificaitons";
 import { transporter } from "../../helper/nodemailer";
 import { HOD } from "../../model/official.HOD";
+import HODNotification from "../../model/hod.notifications";
 export const reviewComplaint = async (req: Request, res: Response) => {
   try {
     const userId = req.user.id;
@@ -45,6 +46,11 @@ export const reviewComplaint = async (req: Request, res: Response) => {
         });
       }
     }
+    await HODNotification.create({
+      HODId: complaint.assignedTo,
+      message: `The Complaint with ${compId} at InvertisCare is Opened by ${dean?.name}(Dean of ${dean?.department} Department)`,
+      type: "Complaint Update",
+    });
     await Notification.create({
       studentRefId: complaint.studentRefId,
       message: `Your Complaint with ${compId} at InvertisCare is Opened by ${dean?.name}(Dean of ${dean?.department} Department)`,

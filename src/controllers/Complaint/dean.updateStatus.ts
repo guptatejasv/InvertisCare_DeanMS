@@ -4,6 +4,7 @@ import { transporter } from "../../helper/nodemailer";
 import { Student } from "../../model/student.user";
 import { Dean } from "../../model/official.deans";
 import Notification from "../../model/student.notificaitons";
+import HODNotification from "../../model/hod.notifications";
 export const updateStatus = async (req: Request, res: Response) => {
   try {
     const { status } = req.body;
@@ -63,6 +64,11 @@ export const updateStatus = async (req: Request, res: Response) => {
     await Notification.create({
       studentRefId: complaint?.studentRefId.toString(),
       message: `Your Complaint with ${compId} at InvertisCare is updated by ${dean?.name}(Dean of ${dean?.department} Department).`,
+      type: "Complaint Update",
+    });
+    await HODNotification.create({
+      HODId: complaint?.studentRefId.toString(),
+      message: `The Complaint with ${compId} at InvertisCare is updated by ${dean?.name}(Dean of ${dean?.department} Department).`,
       type: "Complaint Update",
     });
     res.status(200).json({
