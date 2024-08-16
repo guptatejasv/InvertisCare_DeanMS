@@ -7,19 +7,28 @@ import Notification from "../../model/student.notificaitons";
 export const updateStatus = async (req: Request, res: Response) => {
   try {
     const { status } = req.body;
-    const userID = req.user.id;
+    const userId = req.user.id;
     const compId = req.params.id;
-    const dean = await Dean.findById(userID);
-    const updateStatus = await Complaint.findByIdAndUpdate(
-      compId,
-      {
-        status,
-      },
-      {
-        new: true,
+    const dean = await Dean.findById(userId);
+    const complaint = await Complaint.findById(compId);
+    if (complaint) {
+      if (!complaint.escalatedToDean) {
+        return res.status(203).json({
+          status: "fail",
+          message: "You are not autherized to access this Compalint.",
+        });
       }
-    );
-    const student = await Student.findById(updateStatus?.studentRefId);
+      if (complaint.escalatedToDean.toString() !== userId) {
+        return res.status(203).json({
+          status: "fail",
+          message: "You are not autherized to access this Compalint.",
+        });
+      }
+      complaint.status = status;
+      await complaint.save();
+    }
+
+    const student = await Student.findById(complaint?.studentRefId);
     if (student) {
       if (status == "In progress") {
         await transporter.sendMail({
@@ -42,13 +51,6 @@ export const updateStatus = async (req: Request, res: Response) => {
           subject: "InvertisCare: Complaint Status Update",
           text: `Your Complaint with ${compId} at InvertisCare is updated by ${dean?.name}(Dean of ${dean?.department} Department) and changed status to "${status}".\nPlease keep checking your mail for future updates.`,
         });
-      } else if (status == "Escalated To Chief") {
-        await transporter.sendMail({
-          from: process.env.EMAIL_USER,
-          to: student.email,
-          subject: "InvertisCare: Complaint Status Update",
-          text: `Your Complaint with ${compId} at InvertisCare is updated by ${dean?.name}(Dean of ${dean?.department} Department) and changed status to "${status}".\nPlease keep checking your mail for future updates.`,
-        });
       } else if (status == "Closed") {
         await transporter.sendMail({
           from: process.env.EMAIL_USER,
@@ -59,8 +61,8 @@ export const updateStatus = async (req: Request, res: Response) => {
       }
     }
     await Notification.create({
-      studentRefId: updateStatus?.studentRefId,
-      message: `Your Complaint with ${compId} at InvertisCare is updated by ${dean?.name}(Dean of ${dean?.department} Department) and changed status to "${status}"`,
+      studentRefId: complaint?.studentRefId.toString(),
+      message: `Your Complaint with ${compId} at InvertisCare is updated by ${dean?.name}(Dean of ${dean?.department} Department).`,
       type: "Complaint Update",
     });
     res.status(200).json({

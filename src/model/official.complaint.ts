@@ -10,7 +10,8 @@ export interface IComplaint extends Document {
     video: string[];
   };
   assignedTo: ObjectId;
-  escalatedTo?: ObjectId;
+  escalatedToDean?: ObjectId;
+  escalatedToChief?: ObjectId;
 
   type: string;
   status: string; // Status of the complaint (e.g., "Pending", "Resolved")
@@ -47,9 +48,13 @@ const ComplaintSchema: Schema = new Schema(
       ref: "HOD",
       required: true,
     },
-    escalatedTo: {
+    escalatedToDean: {
       type: Schema.Types.ObjectId,
       ref: "Dean",
+    },
+    escalatedToChief: {
+      type: Schema.Types.ObjectId,
+      ref: "Chief",
     },
     type: {
       type: String,
@@ -71,6 +76,7 @@ const ComplaintSchema: Schema = new Schema(
         "Resolved",
         "Closed",
         "Escalated To Dean",
+        "Escalated To Chief",
       ],
       default: "Pending",
       required: true,

@@ -5,11 +5,28 @@ import { Dean } from "../../model/official.deans";
 import { Student } from "../../model/student.user";
 import Notification from "../../model/student.notificaitons";
 import { transporter } from "../../helper/nodemailer";
+import { HOD } from "../../model/official.HOD";
 export const reviewComplaint = async (req: Request, res: Response) => {
   try {
     const userId = req.user.id;
     const compId = req.params.id;
-    const complaint = await Complaint.findById(compId);
+    const complaint = await Complaint.findById(compId)
+      .populate({ path: "assignedTo", model: HOD })
+      .exec();
+    if (complaint) {
+      if (!complaint.escalatedToDean) {
+        return res.status(203).json({
+          status: "fail",
+          message: "You are not autherized to access this Compalint.",
+        });
+      }
+      if (complaint.escalatedToDean.toString() !== userId) {
+        return res.status(203).json({
+          status: "fail",
+          message: "You are not autherized to access this Compalint.",
+        });
+      }
+    }
     const dean = await Dean.findById(userId);
     if (!complaint) {
       return res.status(400).json({
@@ -23,14 +40,14 @@ export const reviewComplaint = async (req: Request, res: Response) => {
         await transporter.sendMail({
           from: process.env.EMAIL_USER,
           to: student.email,
-          subject: "InvertisCare: Complaint Submission Confirmation",
-          text: `Your Complaint with ${compId} at InvertisCare is reviewed Carefully by ${dean?.name}(Dean of Department).\nPlease keep checking your mail for future updates.`,
+          subject: "InvertisCare: Complaint Reviewed",
+          text: `Your Complaint with ${compId} at InvertisCare is Opened by ${dean?.name}(Dean of ${dean?.department} Department).\nPlease keep checking your mail for future updates.`,
         });
       }
     }
     await Notification.create({
       studentRefId: complaint.studentRefId,
-      message: `Your Complaint with ${compId} at InvertisCare is reviewed Carefully by ${dean?.name}(Dean of Department)`,
+      message: `Your Complaint with ${compId} at InvertisCare is Opened by ${dean?.name}(Dean of ${dean?.department} Department)`,
       type: "Complaint Update",
     });
 

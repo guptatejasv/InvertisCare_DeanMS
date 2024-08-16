@@ -4,11 +4,11 @@ import { Dean } from "../../model/official.deans";
 export const getComplaints = async (req: Request, res: Response) => {
   try {
     const userId = req.user.id;
-    const hod = await Dean.findById(userId);
-    if (hod) {
-      if (hod.role == "Dean") {
+    const dean = await Dean.findById(userId);
+    if (dean) {
+      if (dean.role == "Dean") {
         const complaint = await Complaint.find({
-          escalatedTo: userId,
+          escalatedToDean: userId,
         });
         if (!complaint) {
           return res.status(400).json({

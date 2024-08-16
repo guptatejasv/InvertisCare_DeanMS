@@ -3,7 +3,7 @@ import { Dean } from "../../model/official.deans";
 import DeanNotification from "../../model/dean.notifications";
 export const readNotification = async (req: Request, res: Response) => {
   try {
-    const notificationId = req.body.id;
+    const notificationId = req.params.id;
     const userId = req.user.id;
     const checkUser = await Dean.findById(userId);
     if (checkUser) {
@@ -22,12 +22,11 @@ export const readNotification = async (req: Request, res: Response) => {
         message: "You are not authorized to mark this notification as read..",
       });
     }
-    const notification = await DeanNotification.findOneAndUpdate(
-      { _id: notificationId, studentRefId: userId },
-      { read: true },
-      { new: true }
-    );
-
+    const notification = await DeanNotification.findById(notificationId);
+    if (notification) {
+      notification.read = false;
+      await notification.save();
+    }
     if (!notification) {
       return res.status(404).json({
         status: "fail",

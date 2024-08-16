@@ -1,7 +1,7 @@
 import { Schema, Document, model } from "mongoose";
 
-export interface IDean extends Document {
-  DeanId: string;
+export interface IHOD extends Document {
+  HODId: string;
   email: string;
   password: string;
   phone?: string;
@@ -16,7 +16,7 @@ export interface IDean extends Document {
 
 const AuthSchema: Schema = new Schema(
   {
-    DeanId: {
+    HODId: {
       type: String,
       required: true,
       unique: true,
@@ -33,7 +33,7 @@ const AuthSchema: Schema = new Schema(
     },
     role: {
       type: String,
-      default: "Dean",
+      default: "HOD",
     },
     phone: {
       type: String,
@@ -42,7 +42,6 @@ const AuthSchema: Schema = new Schema(
     department: {
       type: String,
       required: true,
-      unique: true,
     },
     dob: {
       type: Date,
@@ -67,4 +66,4 @@ const AuthSchema: Schema = new Schema(
     versionKey: false,
   }
 );
-export const Dean = model<IDean>("Dean", AuthSchema);
+export const HOD = model<IHOD>("HOD", AuthSchema);
