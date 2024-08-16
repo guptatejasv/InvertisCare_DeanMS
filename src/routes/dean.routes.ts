@@ -14,6 +14,7 @@ import { getNotifications } from "../controllers/Notifications/dean.getNotificat
 import { readNotification } from "../controllers/Notifications/hod.markReadNotification";
 import { getProfile } from "../controllers/Profile/dean.getProfile";
 import { updateProfile } from "../controllers/Profile/dean.updateProfile";
+import { getChief } from "../controllers/Complaint/dean.getChief";
 
 const router = Router();
 router.post("/auth/dean/register", DeanRegister);
@@ -30,4 +31,5 @@ router.patch("/dean/updateComment/:id", verify_token, updateComment);
 router.delete("/dean/deleteComment/:id", verify_token, deleteComment);
 router.get("/dean/getNotifications", verify_token, getNotifications);
 router.patch("/dean/readNotificaion/:id", verify_token, readNotification);
+router.get("/dean/getChief", verify_token, getChief);
 export default router;
