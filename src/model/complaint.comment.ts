@@ -6,7 +6,7 @@ export interface IComment extends Document {
   studentRefId: ObjectId;
   HODId?: ObjectId;
   DeanId?: ObjectId;
-  ChiedId?: ObjectId;
+  ChiefId?: ObjectId;
   commentByHOD?: string;
   commentBYDean?: string;
   commentByChief?: string;

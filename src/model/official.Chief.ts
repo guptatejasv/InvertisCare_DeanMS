@@ -5,7 +5,7 @@ export interface IChief extends Document {
   email: string;
   password: string;
   phone?: string;
-  department?: string;
+  designation?: string;
   name?: string;
   dob?: Date;
   role: string;
@@ -39,7 +39,7 @@ const AuthSchema: Schema = new Schema(
       type: String,
       required: true,
     },
-    department: {
+    designation: {
       type: String,
       required: true,
     },

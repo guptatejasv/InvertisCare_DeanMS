@@ -11,6 +11,7 @@ import Comment from "../../model/complaint.comment";
 import { Student } from "../../model/student.user";
 import Notification from "../../model/student.notificaitons";
 import HODNotification from "../../model/hod.notifications";
+import ChiefNotification from "../../model/chief.notifications";
 export const addComment = async (req: Request, res: Response) => {
   try {
     const userId = req.user.id;
@@ -57,6 +58,13 @@ export const addComment = async (req: Request, res: Response) => {
         message: `A New Comment is added to the complaint with ${compId} id.`,
         type: "Complaint Update",
       });
+      if (complaint.escalatedToChief) {
+        await ChiefNotification.create({
+          ChiefId: complaint.escalatedToChief,
+          message: `A New Comment is added to the complaint with ${compId} id.`,
+          type: "Complaint Update",
+        });
+      }
       const comments = await Comment.create({
         DeanId: userId,
         studentRefId: student?._id,

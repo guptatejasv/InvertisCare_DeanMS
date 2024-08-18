@@ -67,7 +67,7 @@ export const updateStatus = async (req: Request, res: Response) => {
       type: "Complaint Update",
     });
     await HODNotification.create({
-      HODId: complaint?.studentRefId.toString(),
+      HODId: complaint?.assignedTo.toString(),
       message: `The Complaint with ${compId} at InvertisCare is updated by ${dean?.name}(Dean of ${dean?.department} Department).`,
       type: "Complaint Update",
     });

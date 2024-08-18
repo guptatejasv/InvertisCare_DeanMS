@@ -15,10 +15,14 @@ import { readNotification } from "../controllers/Notifications/hod.markReadNotif
 import { getProfile } from "../controllers/Profile/dean.getProfile";
 import { updateProfile } from "../controllers/Profile/dean.updateProfile";
 import { getChief } from "../controllers/Complaint/dean.getChief";
+import { forgetPassword } from "../controllers/Authenticaions/dean.forgetPassword";
+import { resetPassword } from "../controllers/Authenticaions/dean.resetPassword";
 
 const router = Router();
 router.post("/auth/dean/register", DeanRegister);
 router.post("/auth/dean/login", Deanlogin);
+router.post("/auth/dean/forgetPassword", forgetPassword);
+router.patch("/auth/dean/resetPassword/:token", resetPassword);
 router.get("/dean/getProfile", verify_token, getProfile);
 router.patch("/dean/updateProfile", verify_token, updateProfile);
 router.get("/dean/getComplaints", verify_token, getComplaints);

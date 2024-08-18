@@ -24,7 +24,7 @@ export const readNotification = async (req: Request, res: Response) => {
     }
     const notification = await DeanNotification.findById(notificationId);
     if (notification) {
-      notification.read = false;
+      notification.read = true;
       await notification.save();
     }
     if (!notification) {
