@@ -17,6 +17,7 @@ import { updateProfile } from "../controllers/Profile/dean.updateProfile";
 import { getChief } from "../controllers/Complaint/dean.getChief";
 import { forgetPassword } from "../controllers/Authenticaions/dean.forgetPassword";
 import { resetPassword } from "../controllers/Authenticaions/dean.resetPassword";
+import { search } from "../controllers/dean.search";
 
 const router = Router();
 router.post("/auth/dean/register", DeanRegister);
@@ -36,4 +37,5 @@ router.delete("/dean/deleteComment/:id", verify_token, deleteComment);
 router.get("/dean/getNotifications", verify_token, getNotifications);
 router.patch("/dean/readNotificaion/:id", verify_token, readNotification);
 router.get("/dean/getChief", verify_token, getChief);
+router.post("/dean/search", verify_token, search);
 export default router;
